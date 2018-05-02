@@ -20,7 +20,7 @@ class AffiliateRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Affiliate[] Returns an array of Affiliate objects
+//     * @return AffiliateFixtures[] Returns an array of AffiliateFixtures objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class AffiliateRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Affiliate
+    public function findOneBySomeField($value): ?AffiliateFixtures
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.exampleField = :val')

@@ -6,7 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\JobRepository")
- * @ORM\Table("jobs")
+ * @ORM\Table(name="jobs")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Job
 {
@@ -55,7 +56,7 @@ class Job
     /**
      * @ORM\Column(type="text")
      */
-    private $how_to_apply;
+    private $howToApply;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -91,6 +92,12 @@ class Job
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="jobs")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $categoryId;
 
     /**
      * @return int
@@ -238,16 +245,16 @@ class Job
      */
     public function getHowToApply(): ?string
     {
-        return $this->how_to_apply;
+        return $this->howToApply;
     }
 
     /**
-     * @param string $how_to_apply
+     * @param string $howToApply
      * @return Job
      */
-    public function setHowToApply(string $how_to_apply): self
+    public function setHowToApply(string $howToApply): self
     {
-        $this->how_to_apply = $how_to_apply;
+        $this->howToApply = $howToApply;
 
         return $this;
     }
@@ -385,5 +392,38 @@ class Job
         return $this;
     }
 
+    /**
+     * @return Category|null
+     */
+    public function getCategoryId(): ?Category
+    {
+        return $this->categoryId;
+    }
 
+    /**
+     * @param Category|null $categoryId
+     * @return Job
+     */
+    public function setCategoryId(?Category $categoryId): self
+    {
+        $this->categoryId = $categoryId;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function preUpdate()
+    {
+        $this->updatedAt = new \DateTime();
+    }
 }

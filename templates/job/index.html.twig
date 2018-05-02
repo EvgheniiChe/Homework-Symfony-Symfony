@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello!{% endblock %}
+
+{% block body %}
+    {% for job in jobs %}
+        <h2>Job №{{ job.id }}</h2>
+        <ul>
+            <li>Type: {{ job.type }}</li>
+            <li>Company: {{ job.company }}</li>
+            <li>Description: {{ job.description }}</li>
+            <li>Email: {{ job.email }}</li>
+        </ul>
+    {% endfor %}
+{% endblock %}

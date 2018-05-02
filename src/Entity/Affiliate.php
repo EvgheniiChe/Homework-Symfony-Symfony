@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AffiliateRepository")
- * @ORM\Table("affiliates")
+ * @ORM\Table(name="affiliates")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Affiliate
 {
@@ -41,6 +44,17 @@ class Affiliate
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="affiliateId")
+     * @ORM\JoinTable(name="affiliates_categories")
+     */
+    private $categoryId;
+
+    public function __construct()
+    {
+        $this->categoryId = new ArrayCollection();
+    }
     /**
      * @return int
      */
@@ -145,5 +159,47 @@ class Affiliate
         return $this;
     }
 
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategoryId(): Collection
+    {
+        return $this->categoryId;
+    }
 
+    /**
+     * @param Category $categoryId
+     * @return Affiliate
+     */
+    public function addCategoryId(Category $categoryId): self
+    {
+        if (!$this->categoryId->contains($categoryId)) {
+            $this->categoryId[] = $categoryId;
+            $categoryId->addAffiliateId($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Category $categoryId
+     * @return Affiliate
+     */
+    public function removeCategoryId(Category $categoryId): self
+    {
+        if ($this->categoryId->contains($categoryId)) {
+            $this->categoryId->removeElement($categoryId);
+            $categoryId->removeAffiliateId($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+        $this->createdAt = new \DateTime();
+    }
 }
